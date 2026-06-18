@@ -3,39 +3,39 @@
 ## _initiateBridgeERC20(...)
 
 ```text
-INVARIANT
-Transfer must succeed before the bridge sends the message.
-Message amount must equal the amount actually transferred.
-The L1 token must match the correct L2 token.
+ИНВАРИАНТ
+Transfer должен успешно выполниться до того, как bridge отправит message.
+Message amount должен равняться количеству токенов, которое реально было transferred.
+L1 token должен соответствовать правильному L2 token.
 
-CONSEQUENCES
-This may lead to sending a message without locking tokens on L1.
-The message amount may be greater than the amount actually transferred.
-A user may receive the wrong token.
+ПОСЛЕДСТВИЯ
+Это может привести к отправке message без lock токенов на L1.
+Message amount может быть больше, чем реально transferred amount.
+Пользователь может получить неправильный token.
 ```
 
 ## relayMessage(...)
 
 ```text
-INVARIANT
-Only the trusted messenger can relay messages.
-Each message must execute only once.
-Validation must happen before execution.
+ИНВАРИАНТ
+Только trusted messenger может relay messages.
+Каждое message должно исполниться только один раз.
+Validation должна происходить до execution.
 
-CONSEQUENCES
-The function can be called by anyone.
-It may lead to replay or double execution.
-Validation happens after execution, which makes validation useless.
+ПОСЛЕДСТВИЯ
+Функцию сможет вызвать кто угодно.
+Это может привести к replay или double execution.
+Validation будет происходить после execution, что делает validation бесполезной.
 ```
 
 ## finalizeBridgeERC20(...)
 
 ```text
-INVARIANT
-Only the messenger can call finalizeBridgeERC20(...).
-The original cross-chain sender must be the trusted counterpart bridge.
+ИНВАРИАНТ
+Только messenger может вызвать finalizeBridgeERC20(...).
+Original cross-chain sender должен быть trusted counterpart bridge.
 
-CONSEQUENCES
-This may lead to ghost mint.
-This may lead to spoofed message execution.
+ПОСЛЕДСТВИЯ
+Это может привести к ghost mint.
+Это может привести к spoofed message execution.
 ```

@@ -5,7 +5,7 @@
 Формат:
 
 ```text
-INVARIANT
+ИНВАРИАНТ
 
-CONSEQUENCES
+ПОСЛЕДСТВИЯ
 ```

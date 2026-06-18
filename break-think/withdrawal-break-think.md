@@ -3,40 +3,40 @@
 ## _initiateBridgeERC20(...)
 
 ```text
-INVARIANT
-Tokens must be burned on L2 before the L1 release message is finalized.
-Burn amount must equal release amount.
-The L2 token must map to the correct L1 token.
+ИНВАРИАНТ
+Токены должны быть сожжены на L2 до финализации release message на L1.
+Burn amount должен равняться release amount.
+L2 token должен соответствовать правильному L1 token.
 
-CONSEQUENCES
-This may lead to releasing tokens on L1 without burning on L2.
-The bridge may release more tokens than were actually burned.
-A user may receive the wrong token.
+ПОСЛЕДСТВИЯ
+Это может привести к выдаче токенов на L1 без burn на L2.
+Bridge может выдать больше токенов, чем было реально сожжено.
+Пользователь может получить неправильный token.
 ```
 
 ## burn(...)
 
 ```text
-INVARIANT
-Only the authorized bridge can burn bridge tokens.
-Burned amount must be the amount encoded for withdrawal.
-The user must have enough balance to burn the requested amount.
+ИНВАРИАНТ
+Только authorized bridge может burn bridge tokens.
+Burned amount должен быть amount, encoded для withdrawal.
+У пользователя должен быть достаточный balance для burn requested amount.
 
-CONSEQUENCES
-An attacker may change the _from parameter to steal the user's funds.
-This may lead to withdrawing more tokens than were burned.
+ПОСЛЕДСТВИЯ
+Attacker может изменить параметр _from и украсть funds пользователя.
+Это может привести к withdrawal большего количества токенов, чем было burned.
 ```
 
 ## finalizeBridgeERC20(...)
 
 ```text
-INVARIANT
-Only an authentic withdrawal message can release L1 tokens.
-Released amount must equal burned amount.
-Released token must be the correct L1 token for the burned L2 token.
+ИНВАРИАНТ
+Только подлинное withdrawal message может выдать L1 tokens.
+Released amount должен равняться burned amount.
+Released token должен быть правильным L1 token для burned L2 token.
 
-CONSEQUENCES
-An attacker may create a spoofed message that leads to a fake release.
-The released amount may be greater than the burned amount.
-A user may receive the wrong token instead of the intended token.
+ПОСЛЕДСТВИЯ
+Attacker может создать spoofed message, что приведет к fake release.
+Released amount может быть больше, чем burned amount.
+Пользователь может получить неправильный token вместо intended token.
 ```
