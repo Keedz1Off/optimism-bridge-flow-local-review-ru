@@ -1,20 +1,22 @@
 ﻿# Optimism Bridge Flow Local Review RU
 
-Это русская версия учебного разбора Optimism-style bridge flow.
+Этот репозиторий - учебный local review Optimism-style bridge flow.
 
-Цель репозитория - тренировать bridge security thinking:
+Цель - тренировать bridge security thinking:
 
 ```text
-Понять flow -> определить инварианты -> искать нарушения
+Understand the flow -> Define invariants -> Search for violations
 ```
 
-Это не официальный аудит. Это portfolio-style разбор architecture, function-by-function review, message passing, replay protection, auth boundaries и accounting invariants.
+Это не полный production audit. Это study repository, сфокусированный на bridge architecture, function-by-function review, message passing, replay protection, auth boundaries и accounting invariants.
 
-Исходные сниппеты основаны на Optimism Bedrock contracts:
+Function code snippets взяты из официальных Optimism Bedrock contracts:
 
 ```text
 ethereum-optimism/optimism/packages/contracts-bedrock/src/
 ```
+
+Этот репозиторий следует Optimism bridge/message flow, а не Sky DSS accounting.
 
 ## Bridge Model
 
@@ -33,7 +35,7 @@ flowchart TD
     I --> J["mint(to, amount)"]
 ```
 
-Главный deposit invariant:
+Main deposit invariant:
 
 ```text
 L1 locked amount = L2 minted amount
@@ -55,7 +57,7 @@ flowchart TD
     J --> K["safeTransfer(user, amount)"]
 ```
 
-Главный withdrawal invariant:
+Main withdrawal invariant:
 
 ```text
 L2 burned amount = L1 released amount
@@ -63,7 +65,9 @@ L2 burned amount = L1 released amount
 
 ## Core Functions Reviewed
 
-Deposit:
+Этот репозиторий сфокусирован на функциях, которые несут главную bridge logic.
+
+### Main Deposit Functions
 
 ```text
 _initiateBridgeERC20(...)
@@ -72,7 +76,7 @@ relayMessage(...)
 finalizeBridgeERC20(...)
 ```
 
-Withdrawal:
+### Main Withdrawal Functions
 
 ```text
 _initiateBridgeERC20(...)
@@ -81,11 +85,20 @@ sendMessage(...)
 finalizeBridgeERC20(...)
 ```
 
-## Важная Optimism деталь
-
-`StandardBridge._initiateBridgeERC20(...)` общий для L1 и L2 bridge.
+### Why These Functions Matter
 
 ```text
+_initiateBridgeERC20(...) = source-chain accounting and message creation
+sendMessage(...) = messenger message creation
+relayMessage(...) = message validation, replay protection, and execution
+finalizeBridgeERC20(...) = destination-chain mint or release
+```
+
+Important Optimism detail:
+
+```text
+StandardBridge._initiateBridgeERC20(...) is shared by L1 and L2 bridges.
+
 On L1 deposit:
 canonical token -> safeTransferFrom(...) -> deposits += amount
 
@@ -93,7 +106,7 @@ On L2 withdrawal:
 OptimismMintableERC20 -> burn(...)
 ```
 
-## Структура
+## Repository Structure
 
 ```text
 optimism-bridge-flow-local-review-ru/
@@ -111,4 +124,121 @@ optimism-bridge-flow-local-review-ru/
     +-- README.md
     +-- deposit-break-think.md
     +-- withdrawal-break-think.md
+```
+
+## Global Invariants
+
+### Main Global Invariants
+
+```text
+L1 locked amount = L2 minted amount
+```
+
+```text
+L2 burned amount = L1 released amount
+```
+
+```text
+Only authentic bridge messages can mint or release tokens.
+```
+
+### Additional Deposit Invariants
+
+```text
+The L1 token must map to the correct L2 token.
+```
+
+```text
+The recipient encoded in the message must be the intended recipient.
+```
+
+```text
+The deposit message must be sent to the trusted counterpart bridge.
+```
+
+```text
+The deposit message must be finalized only through an authentic messenger path.
+```
+
+```text
+The same deposit message must not be executed twice.
+```
+
+### Additional Withdrawal Invariants
+
+```text
+The L2 token must map to the correct L1 token.
+```
+
+```text
+The withdrawal recipient must be the intended recipient.
+```
+
+```text
+The withdrawal message must be created only after the burn step.
+```
+
+```text
+The withdrawal message must be finalized only through an authentic messenger path.
+```
+
+```text
+The same withdrawal message must not be executed twice.
+```
+
+### Additional Messenger Invariants
+
+```text
+Only the trusted messenger can relay messages.
+```
+
+```text
+The message hash must uniquely identify the sender, target, and calldata.
+```
+
+```text
+The message must be marked as executed before the external target call.
+```
+
+```text
+Validation must happen before execution.
+```
+
+```text
+The target must be the intended destination contract.
+```
+
+## What I Practiced
+
+- Deposit flow analysis
+- Withdrawal flow analysis
+- Message authenticity
+- Replay protection
+- `xDomainMessageSender`
+- Ghost mint risk
+- Fake release risk
+- Accounting invariants
+- Token conservation across chains
+
+## Core Security Idea
+
+```text
+Real state transition
+-> message creation
+-> message validation
+-> execution
+-> mint / release
+```
+
+Если эта связь ломается, message перестает быть proof of real state.
+
+Это может привести к:
+
+```text
+ghost mint
+fake release
+replay
+double spend
+unbacked liquidity
+broken bridge accounting
 ```

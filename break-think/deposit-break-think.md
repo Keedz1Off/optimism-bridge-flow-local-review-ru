@@ -1,41 +1,55 @@
-﻿# Deposit Break Think
+﻿# _initiateBridgeERC20(...)
 
-## _initiateBridgeERC20(...)
+## Invariants 
+1.Transfer must succeed before the bridge sends the message.
 
-```text
-ИНВАРИАНТ
-Transfer должен успешно выполниться до того, как bridge отправит message.
-Message amount должен равняться количеству токенов, которое реально было transferred.
-L1 token должен соответствовать правильному L2 token.
+2.Message amount must equal the amount actually transferred.
 
-ПОСЛЕДСТВИЯ
-Это может привести к отправке message без lock токенов на L1.
-Message amount может быть больше, чем реально transferred amount.
-Пользователь может получить неправильный token.
-```
+3.The L1 token must match to the correct L2 token.
 
-## relayMessage(...)
+## Consequences
 
-```text
-ИНВАРИАНТ
-Только trusted messenger может relay messages.
-Каждое message должно исполниться только один раз.
-Validation должна происходить до execution.
+1. Это может привести к отправке message без locking tokens на L1.
 
-ПОСЛЕДСТВИЯ
-Функцию сможет вызвать кто угодно.
-Это может привести к replay или double execution.
-Validation будет происходить после execution, что делает validation бесполезной.
-```
+2. Message amount может быть больше, чем amount actually transferred.
 
-## finalizeBridgeERC20(...)
+<img width="1258" height="430" alt="image" src="https://github.com/user-attachments/assets/a4e08003-fc77-4c08-ac14-8c41ec83d99a" />
 
-```text
-ИНВАРИАНТ
-Только messenger может вызвать finalizeBridgeERC20(...).
-Original cross-chain sender должен быть trusted counterpart bridge.
 
-ПОСЛЕДСТВИЯ
-Это может привести к ghost mint.
-Это может привести к spoofed message execution.
-```
+3. Token на L1 не соответствует token на L2.
+
+<img width="1024" height="517" alt="image" src="https://github.com/user-attachments/assets/6394f956-c7d3-4b4b-afba-f76ff5d89a1f" />
+
+
+# relayMessage()
+
+## Invariants
+
+1. Only the trusted messenger can relay messages.
+
+2. Each message must execute only once.
+
+3. Validation must happen before execution.
+
+## Consequences
+
+1. Функцию сможет вызвать anyone. Attacker может изменить `_target` или `_sender` parameters.
+
+2. Это может привести к replay или double execution.
+
+3. Validation происходит после execution, что делает validation useless.
+ 
+
+
+
+# finalizeBridgeERC20()
+
+## Invariants
+1. Only the messenger can call finalizeBridgeERC20(...).
+
+2. The original cross-chain sender must be the trusted counterpart bridge.
+
+## Consequences
+1. Это может быть вызвано anyone, что может привести к ghost mint (mint without lock).
+
+2. В худшем случае эту функцию может вызвать другой spoofed bridge instead of original L1 bridge.

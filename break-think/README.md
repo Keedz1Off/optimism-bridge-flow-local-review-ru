@@ -1,11 +1,26 @@
-﻿# Break Think
+﻿# What is a Break-think??
 
-Эта папка для ручного Break Think анализа Optimism bridge flow.
+Это то, что произойдет, если invariant сломается.
 
-Формат:
+## MAIN DEPOSIT FUNCTIONS
 
 ```text
-ИНВАРИАНТ
-
-ПОСЛЕДСТВИЯ
+_initiateBridgeERC20(...)
+sendMessage(...)
+relayMessage(...)
+finalizeBridgeERC20(...)
 ```
+
+## MAIN WITHDRAWAL FUNCTIONS
+
+```text
+_initiateBridgeERC20(...)
+burn(...) branch
+sendMessage(...)
+finalizeBridgeERC20(...)
+```
+
+## 1 INVARIANT
+
+
+## 2 CONSEQUENCES
