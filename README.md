@@ -1,4 +1,5 @@
 ﻿# Optimism Bridge Flow Local Review RU
+![Uploading image.png…]()
 
 Этот репозиторий - учебный local review Optimism-style bridge flow.
 
