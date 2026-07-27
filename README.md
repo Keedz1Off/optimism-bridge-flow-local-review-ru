@@ -122,9 +122,23 @@ optimism-bridge-flow-local-review-ru/
 |   +-- 02-burn.md
 |   +-- 03-finalizeBridgeERC20.md
 +-- break-think/
+|   +-- README.md
+|   +-- deposit-break-think.md
+|   +-- withdrawal-break-think.md
++-- exploit-labs/
     +-- README.md
-    +-- deposit-break-think.md
-    +-- withdrawal-break-think.md
+```
+
+## Exploit Labs
+
+Папка `exploit-labs/` содержит упрощенные PoC-style notes.
+
+Она показывает, как можно доказывать нарушение bridge invariants через маленькие тестовые примеры:
+
+```text
+missing messenger check
+missing counterpart bridge check
+withdrawal message created without burn
 ```
 
 ## Global Invariants
